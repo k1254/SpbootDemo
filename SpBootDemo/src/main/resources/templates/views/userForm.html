@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="fragment/frag01 :: htmlhead" th:with="title=#{app.title}"></head>
+
+<link rel="stylesheet" th:href="@{/css/app_base.css}" />
+<script th:src="@{/js/userForm.js}"></script>
+
+<body>
+  <div th:include="fragment/frag01 :: navbar" th:with="title=#{app.title}"></div>
+
+  <div class="contents">
+    <div class="container">
+
+      <!-- $$$ Body $$$$$$$$$$$$$$$$$$$$$$$$$$$  -->
+      <div class="row">
+        <div class="col-sm-10">
+          <h3 class="page-header" th:utext="#{userForm.title}">編集フォーム</h3>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-sm-12">
+          <form class="form-horizontal" role="form" action="#"
+            th:action="@{/saveUser}" th:object="${user}" method="post">
+            
+            <fieldset>
+            <!-- ユーザー情報：隠しフィールド -->
+            <input hidden="true" type="text" th:field="*{id}" id="id" />
+            <input hidden="true" type="text" th:field="*{version}" id="version" />
+            <input hidden="true" type="text" id="status" th:field="${cmd.status}" />
+            
+            <div class="form-group">
+              <div th:text="${cmd.message}" class="alert col-sm-7">メッセージ</div>
+           
+              <!-- ボタン -->
+              <div class="col-sm-5">
+                <button type="submit" class="btn btn-primary">
+                  <span class="glyphicon glyphicon-save"></span> 保存</button>
+                <a th:if="*{id == null}" href="#" class="btn btn-default btn-md"
+                  id="btnCancel" th:href="@{/createUser}">
+                  <span class="glyphicon glyphicon-refresh"></span> 取消1</a>
+                <a th:if="*{id != null}" href="#" class="btn btn-default btn-md"
+                  id="btnCancel" th:href="@{/editUser/} + *{id}">
+                  <span class="glyphicon glyphicon-refresh"></span> 取消2</a>
+                <a href="#" class="btn btn-default btn-md" 
+                  th:href="@{/userList(mode=${cmd.status})}">
+                  <span class="glyphicon glyphicon-list-alt"></span> 一覧</a>
+              </div>
+            </div>    
+            
+              <!-- %%%%% TAB START %%%%%%%%%%%%%%%%%%%%%%%%% -->
+              <div role="tabpanel">
+
+                <!-- %%%%% タブ・ナビゲーション %%%%% -->
+                <ul class="nav nav-tabs" role="tablist">
+                  <li role="presentation" class="active"><a href="#kojin"
+                    aria-controls="kojin" role="tab" data-toggle="tab">個人情報</a></li>
+                  <li role="presentation"><a href="#jusyo" aria-controls="jusyo"
+                    role="tab" data-toggle="tab">住所・電話</a></li>
+                </ul>
+                
+                <!-- %%%%% タブ・ペイン %%%%% -->
+                <div class="tab-content">
+                
+                  <!-- (( 個人情報 )) -->
+                  <div role="tabpanel" class="tab-pane active" id="kojin">
+                    <br />
+                    <div class="form-group">
+                      <label class="col-sm-2 control-label" for="name">ユーザー名</label>
+                      <div class="col-sm-4 controls">
+                        <input type="text" th:field="*{name}" placeholder="ユーザー名"
+                          th:errorclass="fieldError" maxlength="12" class="form-control" />
+                        <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}">不正な入力</span>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label class="col-sm-2 control-label" for="simei">氏名</label>
+                      <div class="col-sm-4 controls">
+                        <input type="text" th:field="*{simei}" placeholder="氏名"
+                          th:errorclass="fieldError" maxlength="30" class="form-control" />
+                        <span th:if="${#fields.hasErrors('simei')}"
+                          th:errors="*{simei}">不正な入力</span>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label class="col-sm-2 control-label" for="yomi">よみ</label>
+                      <div class="col-sm-4 controls">
+                        <input type="text" th:field="*{yomi}" placeholder="よみ"
+                          th:errorclass="fieldError" maxlength="30" class="form-control" />
+                        <span th:if="${#fields.hasErrors('yomi')}"
+                          th:errors="*{yomi}">不正な入力</span>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label class="col-sm-2 control-label" for="seinenGappi">生年月日</label>
+                      <div class="col-sm-2 controls">
+                        <input type="text" th:field="*{seinenGappi}" placeholder="生年月日"
+                          th:errorclass="fieldError" maxlength="10" class="form-control" />
+                        <span th:if="${#fields.hasErrors('seinenGappi')}"
+                          th:errors="*{seinenGappi}">不正な入力</span>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label class="col-sm-2 control-label" for="seiBetu">性別</label>
+                      <div class="col-sm-2 controls">
+                        <input type="text" th:field="*{seiBetu}" placeholder="性別"
+                          th:errorclass="fieldError" maxlength="2" class="form-control" />
+                        <span th:if="${#fields.hasErrors('seiBetu')}"
+                          th:errors="*{seiBetu}">不正な入力</span>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <!-- (( 住所・電話 )) -->
+                  <div role="tabpanel" class="tab-pane" id="jusyo">
+                    <br />
+                    <div class="form-group">
+                      <label class="col-sm-2 control-label" for="telNo">電話番号</label>
+                      <div class="col-sm-4 controls">
+                        <input type="tel" th:field="*{telNo}" placeholder="電話番号"
+                          th:errorclass="fieldError" maxlength="13" class="form-control" />
+                        <span th:if="${#fields.hasErrors('telNo')}" th:errors="*{telNo}">不正な入力</span>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label class="col-sm-2 control-label" for="yubinBango">郵便番号</label>
+                      <div class="col-sm-4 controls">
+                        <input type="text" th:field="*{yubinBango}" placeholder="郵便番号"
+                          th:errorclass="fieldError" maxlength="8" class="form-control" />
+                        <span th:if="${#fields.hasErrors('yubinBango')}"
+                          th:errors="*{yubinBango}">不正な入力</span>
+                      </div>
+                      <button type="button" class="btn btn-success col-sm-1"
+                        id="btnZip">参照</button>
+                    </div>
+                    <div class="form-group">
+                      <label class="col-sm-2 control-label" for="toDoFuKen">都道府県</label>
+                      <div class="col-sm-4 controls">
+                        <input type="text" th:field="*{toDoFuKen}" placeholder="都道府県"
+                          th:errorclass="fieldError" maxlength="10" class="form-control" />
+                        <span th:if="${#fields.hasErrors('toDoFuKen')}"
+                          th:errors="*{toDoFuKen}">不正な入力</span>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label class="col-sm-2 control-label" for="toDoFuKen">市区町村</label>
+                      <div class="col-sm-4 controls">
+                        <input type="text" th:field="*{siKuTyoSon}" placeholder="市区町村"
+                          th:errorclass="fieldError" maxlength="20" class="form-control" />
+                        <span th:if="${#fields.hasErrors('siKuTyoSon')}"
+                          th:errors="*{siKuTyoSon}">不正な入力</span>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label class="col-sm-2 control-label" for="banTi">番地</label>
+                      <div class="col-sm-4 controls">
+                        <input type="text" th:field="*{banTi}" placeholder="番地"
+                          th:errorclass="fieldError" maxlength="40" class="form-control" />
+                        <span th:if="${#fields.hasErrors('banTi')}" th:errors="*{banTi}">不正な入力</span>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label class="col-sm-2 control-label" for="banTi">建物</label>
+                      <div class="col-sm-4 controls">
+                        <input type="text" th:field="*{tatemono}" placeholder="建物"
+                          th:errorclass="fieldError" maxlength="40" class="form-control" />
+                        <span th:if="${#fields.hasErrors('tatemono')}"
+                          th:errors="*{tatemono}">不正な入力</span>
+                      </div>
+                    </div>
+                  </div>
+                  
+                </div>
+              </div>
+              <!-- %%%%% TAB END %%%%%%%%%%%%%%%%%%%%%%%%% -->
+
+            </fieldset>
+          </form>
+          <hr />
+          <div th:include="fragment/frag01 :: footer" th:with="title=#{app.footer}"></div>
+        </div>
+      </div>
+      <!-- $$$ Body $$$$$$$$$$$$$$$$$$$$$$$$$$$  -->
+
+    </div>
+  </div>
+</body>
+</html>
